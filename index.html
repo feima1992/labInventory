@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 实验室库存 · 本地存储增强版</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f4f7fc;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .app {
+            max-width: 1400px;
+            width: 100%;
+        }
+        h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1e3c5c;
+            margin-bottom: 20px;
+            font-weight: 500;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 12px;
+        }
+        .storage-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+            font-size: 0.9rem;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            border: 1px solid #e9eef3;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .card-header h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #0b2b40;
+        }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #4b6584;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            border-radius: 12px;
+            border: 1.5px solid #dde3ed;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            width: 100%;
+            background: white;
+            transition: all 0.15s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+        }
+        button {
+            background: #1e4e6f;
+            color: white;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: auto;
+            padding: 10px 20px;
+        }
+        button.secondary {
+            background: #e9ecef;
+            color: #1e3c5c;
+            border: 1px solid #cbd5e1;
+        }
+        button.warning {
+            background: #e07c3c;
+        }
+        button.small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            text-align: left;
+            padding: 12px 6px 8px 6px;
+            color: #385e7c;
+            font-weight: 600;
+            border-bottom: 2px solid #d0dde9;
+        }
+        td {
+            padding: 10px 6px;
+            border-bottom: 1px solid #e2eaf2;
+        }
+        .badge {
+            background: #e9ecef;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+        .badge.warning {
+            background: #fde2c4;
+            color: #a34400;
+        }
+        .stock-low {
+            color: #c44536;
+            font-weight: 600;
+        }
+        .action-selector {
+            display: flex;
+            gap: 4px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        .action-btn {
+            flex: 1;
+            background: transparent;
+            color: #1e3c5c;
+            box-shadow: none;
+            border-radius: 14px;
+            padding: 8px 0;
+        }
+        .action-btn.active {
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e3c5c;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast-msg.show {
+            opacity: 1;
+        }
+        .empty-row td {
+            padding: 24px;
+            text-align: center;
+            color: #7e95b0;
+        }
+        th.sortable {
+            cursor: pointer;
+            position: relative;
+        }
+        th.sortable::after {
+            content: '⇅';
+            font-size: 0.8rem;
+            color: #7e95b0;
+            margin-left: 6px;
+        }
+        th.sortable.sorted-asc::after {
+            content: '▲';
+        }
+        th.sortable.sorted-desc::after {
+            content: '▼';
+        }
+        .dir-status {
+            background: #e9f2f9;
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 0.85rem;
+        }
+        .edit-btn {
+            background: none;
+            border: 1px solid #bdd3e8;
+            color: #1e4e6f;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.2);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .modal-card h3 {
+            margin-bottom: 20px;
+            color: #1e3c5c;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <h1>
+        🧬 实验室库存管理 · 本地存储
+        <div class="storage-bar">
+            <span id="dirDisplay" class="dir-status">📁 未选择文件夹</span>
+            <button id="selectFolderBtn" class="secondary small">📂 选择数据文件夹</button>
+        </div>
+    </h1>
+
+    <div class="grid-2col">
+        <div class="card">
+            <div class="card-header"><h2>📦 添加药品 / 耗材</h2></div>
+            <div class="form-group">
+                <label>名称 <span style="font-weight:normal;">(必填)</span></label>
+                <input type="text" id="medName" placeholder="例如：Tris-HCl, 胰酶">
+            </div>
+            <div class="form-group">
+                <label>规格 / 描述</label>
+                <input type="text" id="medSpec" placeholder="如 1M pH8.0, 0.25%">
+            </div>
+            <div class="form-group">
+                <label>单位</label>
+                <input type="text" id="medUnit" list="unitList" placeholder="瓶、盒、支 或自定义单位" value="瓶">
+                <datalist id="unitList">
+                    <option value="瓶"></option>
+                    <option value="盒"></option>
+                    <option value="支"></option>
+                    <option value="包"></option>
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <select id="medCategory">
+                    <option value="药物" selected>药物</option>
+                    <option value="耗材">耗材</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>采购阈值 (低于此值提醒)</label>
+                <input type="number" id="medThreshold" value="5" min="0" step="0.01">
+            </div>
+            <button id="addMedicineBtn" style="width:100%;">➕ 添加药品</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h2>⚡ 快速记录</h2></div>
+            <div class="action-selector">
+                <button id="actionIn" class="action-btn active" data-type="in">📥 入库</button>
+                <button id="actionUse" class="action-btn" data-type="use">🧪 使用</button>
+                <button id="actionBuy" class="action-btn" data-type="buy">🛒 购买</button>
+            </div>
+            <div class="form-group">
+                <label>选择药品</label>
+                <select id="medSelect"><option value="">-- 请先添加药品 --</option></select>
+            </div>
+            <div class="form-group">
+                <label>数量</label>
+                <input type="number" id="opQty" value="1" min="0.01" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>日期</label>
+                <input type="date" id="opDate">
+            </div>
+            <div class="button-group">
+                <button id="submitOpBtn" style="flex:2;">✔ 提交记录</button>
+                <button id="clearOpBtn" class="secondary" style="flex:1;">重置</button>
+            </div>
+            <div style="margin-top:12px; background:#f8fafc; border-radius:14px; padding:8px 12px;">
+                <span id="currentStockHint">选择药品查看当前库存</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 库存盘点表格 (含编辑功能) -->
+    <div class="card">
+        <div class="card-header">
+            <h2>📋 库存盘点</h2>
+            <button id="refreshInventoryBtn" class="secondary small">🔄 刷新</button>
+        </div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="sortable" data-table="inventory" data-key="id" data-type="number">ID</th>
+                        <th class="sortable" data-table="inventory" data-key="name" data-type="string">名称</th>
+                        <th class="sortable" data-table="inventory" data-key="specification" data-type="string">规格</th>
+                        <th class="sortable" data-table="inventory" data-key="category" data-type="string">分类</th>
+                        <th class="sortable" data-table="inventory" data-key="unit" data-type="string">单位</th>
+                        <th class="sortable" data-table="inventory" data-key="threshold" data-type="number">阈值</th>
+                        <th class="sortable" data-table="inventory" data-key="totalIn" data-type="number">总入库</th>
+                        <th class="sortable" data-table="inventory" data-key="totalUsed" data-type="number">总使用</th>
+                        <th class="sortable" data-table="inventory" data-key="stock" data-type="number">库存</th>
+                        <th class="sortable" data-table="inventory" data-key="status" data-type="string">状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 采购提醒 -->
+    <div class="card">
+        <div class="card-header">
+            <h2>⚠️ 采购提醒</h2>
+            <button id="refreshReminderBtn" class="secondary small">刷新</button>
+        </div>
+        <table>
+            <thead><tr>
+                <th class="sortable" data-table="reminder" data-key="name" data-type="string">药品</th>
+                <th class="sortable" data-table="reminder" data-key="specification" data-type="string">规格</th>
+                <th class="sortable" data-table="reminder" data-key="unit" data-type="string">单位</th>
+                <th class="sortable" data-table="reminder" data-key="stock" data-type="number">库存</th>
+                <th class="sortable" data-table="reminder" data-key="threshold" data-type="number">阈值</th>
+                <th class="sortable" data-table="reminder" data-key="suggest" data-type="number">建议采购</th>
+            </tr></thead>
+            <tbody id="reminderBody"></tbody>
+        </table>
+    </div>
+
+    <!-- 操作记录 -->
+    <div class="card">
+        <div class="card-header">
+            <h2>📝 操作记录</h2>
+            <button id="refreshHistoryBtn" class="secondary small">刷新</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead><tr>
+                    <th class="sortable" data-table="history" data-key="index" data-type="number">#</th>
+                    <th class="sortable" data-table="history" data-key="date" data-type="date">日期</th>
+                    <th class="sortable" data-table="history" data-key="name" data-type="string">药品</th>
+                    <th class="sortable" data-table="history" data-key="type" data-type="string">类型</th>
+                    <th class="sortable" data-table="history" data-key="quantity" data-type="number">数量</th>
+                    <th class="sortable" data-table="history" data-key="unit" data-type="string">单位</th>
+                </tr></thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑药品模态框 -->
+<div id="editModal" class="modal">
+    <div class="modal-card">
+        <h3>✏️ 编辑药品信息</h3>
+        <input type="hidden" id="editMedId">
+        <div class="form-group">
+            <label>名称</label>
+            <input type="text" id="editMedName">
+        </div>
+        <div class="form-group">
+            <label>规格</label>
+            <input type="text" id="editMedSpec">
+        </div>
+        <div class="form-group">
+            <label>单位</label>
+            <input type="text" id="editMedUnit" list="unitList" placeholder="瓶、盒、支 或自定义单位">
+        </div>
+        <div class="form-group">
+            <label>分类</label>
+            <select id="editMedCategory">
+                <option value="药物">药物</option>
+                <option value="耗材">耗材</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>总入库</label>
+            <input type="number" id="editTotalIn" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>总使用</label>
+            <input type="number" id="editTotalUsed" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>库存</label>
+            <input type="number" id="editStock" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>阈值</label>
+            <input type="number" id="editMedThreshold" min="0" step="0.01">
+        </div>
+        <div class="button-group">
+            <button id="saveEditBtn">保存修改</button>
+            <button id="cancelEditBtn" class="secondary">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast-msg"></div>
+
+<script>
+    (function(){
+        "use strict";
+
+        // ---------- 数据结构 (增加 unit 字段) ----------
+        let appData = {
+            medicines: [],      // { id, name, specification, unit, threshold }
+            stockIn: [],        // { id, medicineId, quantity, date }
+            usages: [],         // { id, medicineId, quantity, date }
+            purchases: []       // { id, medicineId, quantity, date }
+        };
+        let nextId = {
+            medicines: 1,
+            stockIn: 1,
+            usages: 1,
+            purchases: 1
+        };
+
+        let directoryHandle = null;
+        const FILE_NAME = 'lab_inventory.json';
+
+        const dirDisplay = document.getElementById('dirDisplay');
+        const toast = document.getElementById('toast');
+        const modal = document.getElementById('editModal');
+
+        // ---------- 辅助函数 ----------
+        function showToast(msg, isGood = true) {
+            toast.textContent = msg;
+            toast.style.background = isGood ? '#1e4e6f' : '#b13e3e';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function getTodayDateString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function getStockForMedicine(medId) {
+            const totalIn = appData.stockIn.filter(r => r.medicineId === medId).reduce((s, r) => s + r.quantity, 0);
+            const totalUsed = appData.usages.filter(r => r.medicineId === medId).reduce((s, r) => s + r.quantity, 0);
+            return totalIn - totalUsed;
+        }
+
+        const sortState = {
+            inventory: { key: 'id', asc: true, type: 'number' },
+            reminder: { key: 'stock', asc: true, type: 'number' },
+            history: { key: 'date', asc: false, type: 'date' }
+        };
+
+        function compareValues(a, b, type = 'string', asc = true) {
+            if (type === 'number') {
+                a = parseFloat(a) || 0;
+                b = parseFloat(b) || 0;
+            } else if (type === 'date') {
+                a = new Date(a);
+                b = new Date(b);
+            } else {
+                a = String(a || '').toLowerCase();
+                b = String(b || '').toLowerCase();
+            }
+            if (a < b) return asc ? -1 : 1;
+            if (a > b) return asc ? 1 : -1;
+            return 0;
+        }
+
+        function installSortableHeaders() {
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.addEventListener('click', () => {
+                    const table = th.dataset.table;
+                    const key = th.dataset.key;
+                    const type = th.dataset.type || 'string';
+                    const state = sortState[table];
+                    if (!state) return;
+                    if (state.key === key) {
+                        state.asc = !state.asc;
+                    } else {
+                        state.key = key;
+                        state.asc = true;
+                        state.type = type;
+                    }
+                    document.querySelectorAll(`th.sortable[data-table="${table}"]`).forEach(header => {
+                        header.classList.remove('sorted-asc', 'sorted-desc');
+                        if (header.dataset.key === state.key) {
+                            header.classList.add(state.asc ? 'sorted-asc' : 'sorted-desc');
+                        }
+                    });
+                    if (table === 'inventory') renderInventory();
+                    if (table === 'reminder') renderReminder();
+                    if (table === 'history') renderHistory();
+                });
+            });
+        }
+
+        function getNextId(type) {
+            return nextId[type]++;
+        }
+
+        function updateNextIds() {
+            nextId.medicines = Math.max(0, ...appData.medicines.map(m => m.id)) + 1;
+            nextId.stockIn = Math.max(0, ...appData.stockIn.map(r => r.id)) + 1;
+            nextId.usages = Math.max(0, ...appData.usages.map(r => r.id)) + 1;
+            nextId.purchases = Math.max(0, ...appData.purchases.map(r => r.id)) + 1;
+        }
+
+        // 为旧数据补全 unit 字段
+        function normalizeData() {
+            appData.medicines.forEach(m => {
+                if (!m.unit) m.unit = '瓶';
+                if (!m.category) m.category = '药物';
+            });
+        }
+
+        // ---------- 文件读写 ----------
+        async function verifyPermission(fileHandle, withWrite = true) {
+            const opts = { mode: withWrite ? 'readwrite' : 'read' };
+            if (await fileHandle.queryPermission(opts) === 'granted') return true;
+            return (await fileHandle.requestPermission(opts)) === 'granted';
+        }
+
+        async function saveDataToFile() {
+            if (!directoryHandle) return false;
+            try {
+                if (!await verifyPermission(directoryHandle, true)) {
+                    showToast('需要写入权限', false);
+                    return false;
+                }
+                const fileHandle = await directoryHandle.getFileHandle(FILE_NAME, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(JSON.stringify(appData, null, 2));
+                await writable.close();
+                return true;
+            } catch (err) {
+                showToast('保存失败', false);
+                return false;
+            }
+        }
+
+        async function loadDataFromFile() {
+            if (!directoryHandle) return false;
+            try {
+                if (!await verifyPermission(directoryHandle, false)) return false;
+                const fileHandle = await directoryHandle.getFileHandle(FILE_NAME);
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                const loaded = JSON.parse(text);
+                if (loaded.medicines && loaded.stockIn && loaded.usages && loaded.purchases) {
+                    appData = loaded;
+                    normalizeData();
+                    updateNextIds();
+                    await refreshAllUI();
+                    showToast('数据已加载');
+                    return true;
+                }
+            } catch (err) {
+                if (err.name === 'NotFoundError') {
+                    await saveDataToFile();
+                    showToast('已创建新数据文件');
+                    return true;
+                }
+                console.warn(err);
+            }
+            return false;
+        }
+
+        async function selectFolder() {
+            try {
+                const handle = await window.showDirectoryPicker();
+                directoryHandle = handle;
+                dirDisplay.textContent = `📁 ${handle.name}`;
+                await loadDataFromFile();
+                await refreshAllUI();
+            } catch (err) {
+                if (err.name !== 'AbortError') showToast('选择文件夹失败', false);
+            }
+        }
+
+        async function autoSave() {
+            if (directoryHandle) await saveDataToFile();
+        }
+
+        // ---------- UI 渲染 ----------
+        async function refreshMedSelect() {
+            const select = document.getElementById('medSelect');
+            let html = '<option value="">-- 选择药品 --</option>';
+            appData.medicines.sort((a,b) => a.id - b.id).forEach(m => {
+                const spec = m.specification ? ` (${m.specification})` : '';
+                const unit = m.unit ? ` ${m.unit}` : '';
+                html += `<option value="${m.id}">${m.name}${spec}${unit}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        async function updateStockHint(medId) {
+            const hint = document.getElementById('currentStockHint');
+            if (!medId) { hint.textContent = '选择药品查看当前库存'; return; }
+            const stock = getStockForMedicine(Number(medId));
+            const med = appData.medicines.find(m => m.id === Number(medId));
+            if (med) {
+                hint.innerHTML = `📊 ${med.name} 当前库存: <strong>${stock}</strong> (阈值 ${med.threshold || 5})`;
+            }
+        }
+
+        async function renderInventory() {
+            const tbody = document.getElementById('inventoryBody');
+            if (appData.medicines.length === 0) {
+                tbody.innerHTML = '<tr class="empty-row"><td colspan="11">暂无药品，请先添加</td></tr>';
+                return;
+            }
+            const sort = sortState.inventory;
+            const rowsData = appData.medicines.map(m => {
+                const computedTotalIn = appData.stockIn.filter(r => r.medicineId === m.id).reduce((s,r)=>s+r.quantity,0);
+                const computedTotalUsed = appData.usages.filter(r => r.medicineId === m.id).reduce((s,r)=>s+r.quantity,0);
+                const computedStock = computedTotalIn - computedTotalUsed;
+                const totalIn = m.inventoryTotalIn != null ? m.inventoryTotalIn : computedTotalIn;
+                const totalUsed = m.inventoryTotalUsed != null ? m.inventoryTotalUsed : computedTotalUsed;
+                const stock = m.inventoryStock != null ? m.inventoryStock : computedStock;
+                const threshold = m.threshold || 5;
+                const statusText = stock < threshold ? '低于阈值' : '正常';
+                return {
+                    id: m.id,
+                    name: m.name,
+                    specification: m.specification || '—',
+                    category: m.category || '药物',
+                    unit: m.unit || '瓶',
+                    threshold,
+                    totalIn,
+                    totalUsed,
+                    stock,
+                    status: statusText,
+                    statusHtml: stock < threshold ? '<span class="badge warning">⚠️ 低于阈值</span>' : '<span class="badge success">✅ 正常</span>'
+                };
+            });
+            rowsData.sort((a,b) => compareValues(a[sort.key], b[sort.key], sort.type, sort.asc));
+            let rows = '';
+            rowsData.forEach(item => {
+                rows += `<tr>
+                    <td>${item.id}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.specification}</td>
+                    <td>${item.category}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.threshold}</td>
+                    <td>${item.totalIn}</td>
+                    <td>${item.totalUsed}</td>
+                    <td class="${item.stock < item.threshold ? 'stock-low' : ''}">${item.stock}</td>
+                    <td>${item.statusHtml}</td>
+                    <td><button class="edit-btn" data-id="${item.id}">✏️ 编辑</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = rows;
+            // 绑定编辑事件
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(btn.dataset.id);
+                    openEditModal(id);
+                });
+            });
+        }
+
+        async function renderReminder() {
+            const tbody = document.getElementById('reminderBody');
+            const lowItems = [];
+            appData.medicines.forEach(m => {
+                const stock = m.inventoryStock != null ? m.inventoryStock : getStockForMedicine(m.id);
+                const threshold = m.threshold || 5;
+                if (stock < threshold) lowItems.push({
+                    name: m.name,
+                    specification: m.specification || '—',
+                    unit: m.unit || '瓶',
+                    stock,
+                    threshold,
+                    suggest: threshold - stock
+                });
+            });
+            if (lowItems.length === 0) {
+                tbody.innerHTML = '<tr class="empty-row"><td colspan="6">✨ 所有药品库存充足</td></tr>';
+                return;
+            }
+            const sort = sortState.reminder;
+            lowItems.sort((a,b) => compareValues(a[sort.key], b[sort.key], sort.type, sort.asc));
+            let rows = '';
+            lowItems.forEach(item => {
+                rows += `<tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.specification}</td>
+                    <td>${item.unit}</td>
+                    <td class="stock-low">${item.stock}</td>
+                    <td>${item.threshold}</td>
+                    <td><span class="badge warning">需采购 ${item.suggest}</span></td>
+                </tr>`;
+            });
+            tbody.innerHTML = rows;
+        }
+
+        async function renderHistory() {
+            const tbody = document.getElementById('historyBody');
+            const records = [];
+            appData.stockIn.forEach(item => {
+                const med = appData.medicines.find(m => m.id === item.medicineId);
+                records.push({ date: item.date, name: med ? med.name : '未知', type: '入库', quantity: item.quantity, unit: med ? med.unit : '瓶' });
+            });
+            appData.usages.forEach(item => {
+                const med = appData.medicines.find(m => m.id === item.medicineId);
+                records.push({ date: item.date, name: med ? med.name : '未知', type: '使用', quantity: item.quantity, unit: med ? med.unit : '瓶' });
+            });
+            appData.purchases.forEach(item => {
+                const med = appData.medicines.find(m => m.id === item.medicineId);
+                records.push({ date: item.date, name: med ? med.name : '未知', type: '购买', quantity: item.quantity, unit: med ? med.unit : '瓶' });
+            });
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const recentRecords = records.filter(item => {
+                const recordDate = new Date(item.date);
+                return !isNaN(recordDate) && recordDate >= oneWeekAgo;
+            }).map((item, idx) => ({ ...item, index: idx + 1 }));
+            if (recentRecords.length === 0) {
+                tbody.innerHTML = '<tr class="empty-row"><td colspan="6">暂无最近一周操作记录</td></tr>';
+                return;
+            }
+            const sort = sortState.history;
+            recentRecords.sort((a,b) => compareValues(a[sort.key], b[sort.key], sort.type, sort.asc));
+            let rows = '';
+            recentRecords.forEach((item, idx) => {
+                rows += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${item.date}</td>
+                    <td>${item.name}</td>
+                    <td>${item.type}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.unit}</td>
+                </tr>`;
+            });
+            tbody.innerHTML = rows;
+        }
+
+        async function refreshAllUI() {
+            await refreshMedSelect();
+            await renderInventory();
+            await renderReminder();
+            await renderHistory();
+            const select = document.getElementById('medSelect');
+            if (select.value) await updateStockHint(select.value);
+        }
+
+        // ---------- 编辑药品 ----------
+        function openEditModal(id) {
+            const med = appData.medicines.find(m => m.id === id);
+            if (!med) return;
+            const computedTotalIn = appData.stockIn.filter(r => r.medicineId === med.id).reduce((s,r)=>s+r.quantity,0);
+            const computedTotalUsed = appData.usages.filter(r => r.medicineId === med.id).reduce((s,r)=>s+r.quantity,0);
+            const computedStock = computedTotalIn - computedTotalUsed;
+
+            document.getElementById('editMedId').value = med.id;
+            document.getElementById('editMedName').value = med.name;
+            document.getElementById('editMedSpec').value = med.specification || '';
+            document.getElementById('editMedUnit').value = med.unit || '瓶';
+            document.getElementById('editMedCategory').value = med.category || '药物';
+            document.getElementById('editTotalIn').value = med.inventoryTotalIn != null ? med.inventoryTotalIn : computedTotalIn;
+            document.getElementById('editTotalUsed').value = med.inventoryTotalUsed != null ? med.inventoryTotalUsed : computedTotalUsed;
+            document.getElementById('editStock').value = med.inventoryStock != null ? med.inventoryStock : computedStock;
+            document.getElementById('editMedThreshold').value = med.threshold || 5;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        async function saveEdit() {
+            const id = Number(document.getElementById('editMedId').value);
+            const med = appData.medicines.find(m => m.id === id);
+            if (!med) return;
+            const newName = document.getElementById('editMedName').value.trim();
+            if (!newName) { showToast('名称不能为空', false); return; }
+            const totalIn = parseFloat(document.getElementById('editTotalIn').value);
+            const totalUsed = parseFloat(document.getElementById('editTotalUsed').value);
+            const stock = parseFloat(document.getElementById('editStock').value);
+            if (isNaN(totalIn) || totalIn < 0 || isNaN(totalUsed) || totalUsed < 0 || isNaN(stock) || stock < 0) {
+                showToast('总入库/总使用/库存必须是非负数', false);
+                return;
+            }
+            if (stock > totalIn) {
+                showToast('库存不能大于总入库', false);
+                return;
+            }
+
+            med.name = newName;
+            med.specification = document.getElementById('editMedSpec').value.trim() || null;
+            med.unit = document.getElementById('editMedUnit').value.trim() || '瓶';
+            med.category = document.getElementById('editMedCategory').value || '药物';
+            let threshold = parseFloat(document.getElementById('editMedThreshold').value);
+            if (isNaN(threshold) || threshold < 0) threshold = 5;
+            med.threshold = threshold;
+            med.inventoryTotalIn = totalIn;
+            med.inventoryTotalUsed = totalUsed;
+            med.inventoryStock = stock;
+
+            await autoSave();
+            await refreshAllUI();
+            closeModal();
+            showToast('药品盘点信息已保存');
+        }
+
+        // ---------- 初始化 ----------
+        async function init() {
+            document.getElementById('opDate').value = getTodayDateString();
+            normalizeData();
+
+            // 选择文件夹
+            document.getElementById('selectFolderBtn').addEventListener('click', selectFolder);
+
+            // 操作切换
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const type = btn.dataset.type;
+                    const submitBtn = document.getElementById('submitOpBtn');
+                    submitBtn.textContent = type === 'in' ? '📥 提交入库' : (type === 'use' ? '🧪 提交使用' : '🛒 提交购买');
+                });
+            });
+
+            document.getElementById('medSelect').addEventListener('change', e => updateStockHint(e.target.value));
+
+            // 添加药品
+            document.getElementById('addMedicineBtn').addEventListener('click', async () => {
+                const name = document.getElementById('medName').value.trim();
+                if (!name) { showToast('请输入名称', false); return; }
+                const spec = document.getElementById('medSpec').value.trim();
+                const unit = document.getElementById('medUnit').value.trim() || '瓶';
+                let threshold = parseFloat(document.getElementById('medThreshold').value);
+                if (isNaN(threshold) || threshold < 0) threshold = 5;
+
+                const newMed = {
+                    id: getNextId('medicines'),
+                    name,
+                    specification: spec || null,
+                    unit,
+                    category: document.getElementById('medCategory').value || '药物',
+                    threshold
+                };
+                appData.medicines.push(newMed);
+                await autoSave();
+                showToast(`已添加 ${name}`);
+                document.getElementById('medName').value = '';
+                document.getElementById('medSpec').value = '';
+                document.getElementById('medThreshold').value = 5;
+                await refreshAllUI();
+            });
+
+            // 提交操作
+            document.getElementById('submitOpBtn').addEventListener('click', async () => {
+                const select = document.getElementById('medSelect');
+                const medId = select.value;
+                if (!medId) { showToast('请选择药品', false); return; }
+                let qty = parseFloat(document.getElementById('opQty').value);
+                if (isNaN(qty) || qty <= 0) { showToast('数量必须大于 0', false); return; }
+                const date = document.getElementById('opDate').value;
+                if (!date) { showToast('请选择日期', false); return; }
+
+                const med = appData.medicines.find(m => m.id === Number(medId));
+                const activeBtn = document.querySelector('.action-btn.active');
+                const actionType = activeBtn.dataset.type;
+
+                if (actionType === 'use') {
+                    const stock = getStockForMedicine(Number(medId));
+                    if (qty > stock) { showToast(`库存不足！当前仅有 ${stock}`, false); return; }
+                    appData.usages.push({ id: getNextId('usages'), medicineId: Number(medId), quantity: qty, date });
+                    showToast(`已记录使用: ${med.name} -${qty}`);
+                } else if (actionType === 'in') {
+                    appData.stockIn.push({ id: getNextId('stockIn'), medicineId: Number(medId), quantity: qty, date });
+                    showToast(`已入库: ${med.name} +${qty}`);
+                } else {
+                    appData.purchases.push({ id: getNextId('purchases'), medicineId: Number(medId), quantity: qty, date });
+                    showToast(`已记录购买: ${med.name} ${qty} (仅记录)`);
+                }
+
+                await autoSave();
+                document.getElementById('opQty').value = 1;
+                await refreshAllUI();
+                select.value = medId;
+                await updateStockHint(Number(medId));
+            });
+
+            document.getElementById('clearOpBtn').addEventListener('click', () => {
+                document.getElementById('medSelect').value = '';
+                document.getElementById('opQty').value = 1;
+                document.getElementById('opDate').value = getTodayDateString();
+                document.getElementById('currentStockHint').textContent = '选择药品查看当前库存';
+            });
+
+            document.getElementById('refreshInventoryBtn').addEventListener('click', refreshAllUI);
+            document.getElementById('refreshReminderBtn').addEventListener('click', refreshAllUI);
+            document.getElementById('refreshHistoryBtn').addEventListener('click', refreshAllUI);
+            installSortableHeaders();
+
+            // 编辑模态框
+            const editTotalIn = document.getElementById('editTotalIn');
+            const editTotalUsed = document.getElementById('editTotalUsed');
+            const editStock = document.getElementById('editStock');
+            const syncStock = () => {
+                const totalIn = parseFloat(editTotalIn.value) || 0;
+                const totalUsed = parseFloat(editTotalUsed.value) || 0;
+                editStock.value = Math.max(0, totalIn - totalUsed);
+            };
+            editTotalIn.addEventListener('input', syncStock);
+            editTotalUsed.addEventListener('input', syncStock);
+            editStock.addEventListener('input', () => {
+                const totalIn = parseFloat(editTotalIn.value) || 0;
+                const stockVal = parseFloat(editStock.value) || 0;
+                if (stockVal <= totalIn) {
+                    editTotalUsed.value = Math.max(0, totalIn - stockVal);
+                }
+            });
+            document.getElementById('cancelEditBtn').addEventListener('click', closeModal);
+            document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+            window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+            await refreshAllUI();
+            showToast('请点击“选择数据文件夹”开始', true);
+        }
+
+        init();
+    })();
+</script>
+</body>
+</html>

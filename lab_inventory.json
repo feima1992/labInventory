@@ -1,0 +1,545 @@
+{
+  "medicines": [
+    {
+      "id": 1,
+      "name": "复方电解质注射液（勃脉力A）",
+      "specification": "500 mL",
+      "threshold": 10,
+      "unit": "瓶",
+      "category": "药物"
+    },
+    {
+      "id": 2,
+      "name": "20%甘露醇",
+      "specification": "50g:250mL",
+      "threshold": 5,
+      "unit": "瓶",
+      "category": "药物"
+    },
+    {
+      "id": 3,
+      "name": "20%人血白蛋白",
+      "specification": "10g:50mL",
+      "threshold": 5,
+      "unit": "瓶",
+      "category": "药物"
+    },
+    {
+      "id": 4,
+      "name": "甲泼尼龙",
+      "specification": "40mg",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 5,
+      "name": "多种维生素（卫美佳12）",
+      "specification": "5mL",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 6,
+      "name": "头孢氨苄",
+      "specification": "0.5g",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 7,
+      "name": "庆大霉素",
+      "specification": "2ml:80000U",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 8,
+      "name": "注射用果糖二磷酸钠",
+      "specification": "5g",
+      "unit": "瓶",
+      "threshold": 3,
+      "category": "药物"
+    },
+    {
+      "id": 9,
+      "name": "复方氨基酸注射液18AA-II",
+      "specification": "250mL:12.5g",
+      "unit": "瓶",
+      "threshold": 3,
+      "inventoryTotalIn": 1,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 1,
+      "category": "药物"
+    },
+    {
+      "id": 10,
+      "name": "氯化钙注射液",
+      "specification": "0.5g:10mL",
+      "unit": "瓶",
+      "threshold": 10,
+      "inventoryTotalIn": 42,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 42,
+      "category": "药物"
+    },
+    {
+      "id": 11,
+      "name": "常规胰岛素",
+      "specification": "400U:10mL",
+      "unit": "瓶",
+      "threshold": 1,
+      "inventoryTotalIn": 3,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 3,
+      "category": "药物"
+    },
+    {
+      "id": 12,
+      "name": "硝酸甘油注射液",
+      "specification": "5mg:1mL",
+      "unit": "瓶",
+      "threshold": 10,
+      "category": "药物"
+    },
+    {
+      "id": 13,
+      "name": "肾上腺素注射液",
+      "specification": "1mg:1mL",
+      "unit": "瓶",
+      "threshold": 10,
+      "category": "药物"
+    },
+    {
+      "id": 14,
+      "name": "50%葡萄糖注射液",
+      "specification": "10g:20mL",
+      "unit": "瓶",
+      "threshold": 10,
+      "category": "药物"
+    },
+    {
+      "id": 15,
+      "name": "硫酸镁注射液",
+      "specification": "2mL:1g",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 16,
+      "name": "碳酸氢钠注射液",
+      "specification": "10mL:0.5g",
+      "unit": "瓶",
+      "threshold": 20,
+      "category": "药物"
+    },
+    {
+      "id": 17,
+      "name": "米力农注射液",
+      "specification": "10mL:10mg",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 18,
+      "name": "肝素钠注射液",
+      "specification": "2mL:12500U",
+      "unit": "瓶",
+      "threshold": 10,
+      "category": "药物"
+    },
+    {
+      "id": 19,
+      "name": "氯化钾",
+      "specification": "10mL:1g",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 20,
+      "name": "环磷腺苷",
+      "specification": "2mL:20mg",
+      "unit": "瓶",
+      "threshold": 3,
+      "category": "药物"
+    },
+    {
+      "id": 21,
+      "name": "辅酶Q10",
+      "specification": "2mL:5mg",
+      "unit": "瓶",
+      "threshold": 5,
+      "inventoryTotalIn": 10,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 10,
+      "category": "药物"
+    },
+    {
+      "id": 22,
+      "name": "注射用磷酸肌酸钠",
+      "specification": "0.5g",
+      "unit": "瓶",
+      "threshold": 10,
+      "category": "药物"
+    },
+    {
+      "id": 23,
+      "name": "20%脂肪乳注射液(c14-24)",
+      "specification": "250mL:50g",
+      "unit": "瓶",
+      "threshold": 1,
+      "category": "药物"
+    },
+    {
+      "id": 24,
+      "name": "己酮可可碱",
+      "specification": "5mL:0.1g",
+      "unit": "瓶",
+      "threshold": 3,
+      "inventoryTotalIn": 2,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 2,
+      "category": "药物"
+    },
+    {
+      "id": 25,
+      "name": "乙酰半胱氨酸",
+      "specification": "3mL:0.3g",
+      "unit": "瓶",
+      "threshold": 2,
+      "category": "药物"
+    },
+    {
+      "id": 26,
+      "name": "右旋糖酐40氯化钠注射液",
+      "specification": "500 mL",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 27,
+      "name": "利多卡因",
+      "specification": "5mL:0.1g",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 28,
+      "name": "多巴酚丁胺",
+      "specification": "2mL:20mg",
+      "unit": "瓶",
+      "threshold": 5,
+      "category": "药物"
+    },
+    {
+      "id": 29,
+      "name": "替罗非班",
+      "specification": "100mL:5mg",
+      "unit": "瓶",
+      "threshold": 1,
+      "inventoryTotalIn": 1.5,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 1.5,
+      "category": "药物"
+    },
+    {
+      "id": 30,
+      "name": "一次性停博灌注套装",
+      "specification": null,
+      "unit": "套",
+      "threshold": 3,
+      "category": "耗材",
+      "inventoryTotalIn": 6,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 6
+    },
+    {
+      "id": 31,
+      "name": "动脉血栓过滤器",
+      "specification": "儿童型",
+      "unit": "套",
+      "threshold": 3,
+      "category": "耗材",
+      "inventoryTotalIn": 1,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 1
+    },
+    {
+      "id": 32,
+      "name": "一次性体外循环灌注管路",
+      "specification": "儿童型",
+      "unit": "套",
+      "threshold": 3,
+      "category": "耗材",
+      "inventoryTotalIn": 3,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 3
+    },
+    {
+      "id": 33,
+      "name": "威高氧合器",
+      "specification": "儿童型",
+      "unit": "套",
+      "threshold": 3,
+      "category": "耗材",
+      "inventoryTotalIn": 1,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 1
+    },
+    {
+      "id": 34,
+      "name": "一次性使用去白细胞采输血器",
+      "specification": null,
+      "unit": "套",
+      "threshold": 5,
+      "category": "耗材",
+      "inventoryTotalIn": 12,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 12
+    },
+    {
+      "id": 35,
+      "name": "输液器",
+      "specification": null,
+      "unit": "个",
+      "threshold": 10,
+      "inventoryTotalIn": 26,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 26,
+      "category": "耗材"
+    },
+    {
+      "id": 36,
+      "name": "血气分析卡",
+      "specification": null,
+      "unit": "个",
+      "threshold": 20,
+      "category": "耗材",
+      "inventoryTotalIn": 30,
+      "inventoryTotalUsed": 0,
+      "inventoryStock": 30
+    }
+  ],
+  "stockIn": [
+    {
+      "id": 1,
+      "medicineId": 1,
+      "quantity": 14,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 2,
+      "medicineId": 2,
+      "quantity": 39,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 3,
+      "medicineId": 3,
+      "quantity": 3,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 4,
+      "medicineId": 4,
+      "quantity": 4,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 5,
+      "medicineId": 5,
+      "quantity": 7,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 6,
+      "medicineId": 6,
+      "quantity": 48,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 7,
+      "medicineId": 7,
+      "quantity": 18,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 8,
+      "medicineId": 8,
+      "quantity": 1,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 9,
+      "medicineId": 1,
+      "quantity": 1,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 10,
+      "medicineId": 10,
+      "quantity": 42,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 11,
+      "medicineId": 12,
+      "quantity": 25,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 12,
+      "medicineId": 13,
+      "quantity": 99,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 13,
+      "medicineId": 14,
+      "quantity": 38,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 14,
+      "medicineId": 15,
+      "quantity": 2,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 15,
+      "medicineId": 16,
+      "quantity": 98,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 16,
+      "medicineId": 17,
+      "quantity": 5,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 17,
+      "medicineId": 18,
+      "quantity": 20,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 18,
+      "medicineId": 19,
+      "quantity": 8,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 19,
+      "medicineId": 20,
+      "quantity": 10,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 20,
+      "medicineId": 21,
+      "quantity": 10,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 21,
+      "medicineId": 22,
+      "quantity": 20,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 22,
+      "medicineId": 23,
+      "quantity": 3,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 23,
+      "medicineId": 24,
+      "quantity": 2,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 24,
+      "medicineId": 25,
+      "quantity": 5,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 25,
+      "medicineId": 26,
+      "quantity": 50,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 26,
+      "medicineId": 27,
+      "quantity": 1,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 27,
+      "medicineId": 28,
+      "quantity": 20,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 28,
+      "medicineId": 29,
+      "quantity": 1.5,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 29,
+      "medicineId": 30,
+      "quantity": 6,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 30,
+      "medicineId": 31,
+      "quantity": 1,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 31,
+      "medicineId": 32,
+      "quantity": 3,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 32,
+      "medicineId": 33,
+      "quantity": 1,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 33,
+      "medicineId": 34,
+      "quantity": 12,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 34,
+      "medicineId": 35,
+      "quantity": 26,
+      "date": "2026-04-23"
+    },
+    {
+      "id": 35,
+      "medicineId": 36,
+      "quantity": 30,
+      "date": "2026-04-23"
+    }
+  ],
+  "usages": [],
+  "purchases": []
+}
